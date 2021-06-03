@@ -1,83 +1,92 @@
 const express = require('express');
 const router = express.Router();
-const skill = require('../models/skill_db');
+const skill = require('../models/skill-db');
 
 router.use(express.json());
 
-router.get('/',(req, res)=>{
-    skill.getAllSkill((response)=>{
-        if(!response){
-            res.status(500);
-            res.send("Database Error!");
-        }else{
+router.get('/',(req, res)=>
+    skill.getAllSkill().then(
+        (result)=>{
             res.status(200);
-            res.json(response);
+            res.json(result);
         }
-    });
-});
+    ).catch(
+        (reject)=>{
+            res.status(500);
+            res.send(reject);
+        }
+    )
+);
 
-router.get('/:id',(req,res)=>{
-    const { id } = req.params;
-    skill.getSkill(id,(response)=>{
-        if(!response){
-            res.status(500);
-            res.send("Database Error!");
-        }else{
+router.get('/:id',(req,res)=>
+    skill.getSkill(req.params.id).then(
+        (result)=>{
             res.status(200);
-            res.json(response);
+            res.json(result);
         }
-    });
-});
+    ).catch(
+        (reject)=>{
+            res.status(500);
+            res.send(reject);
+        }
+    )
+);
 
 router.post('/',(req,res)=>{
-    const result = skill.Skill(req.body);
-    if(!result){
+    const skillBody = skill.Skill(req.body);
+    if(!skillBody){
         res.status(400);
         res.send("Invalid input request!");
     }else{
-        skill.createSkill(result, response=>{
-            if(!response){
-                res.status(500);
-                res.send("Databasae Error!");
-            }else{
+        skill.createSkill(skillBody).then(
+            (result)=>{
                 res.status(200);
-                res.send("Ok");
+                res.send(result);
             }
-        });
+        ).catch(
+            (reject)=>{
+                res.status(500);
+                res.send(reject);
+            }
+        );
     }
 });
 
 router.put('/:id',(req,res)=>{
     const { id } = req.params;
-    const result = skill.Skill(req.body);
-    if(!result){
+    const skillBody = skill.Skill(req.body);
+    if(!skillBody){
         res.status(400);
         res.send("Invalid input request!");
     }else{
-        skill.updateSkill(id, result, response=>{
-            if(!response){
-                res.status(500);
-                res.send("Database Error!");
-            }else{
+        skill.updateSkill(id, skillBody).then(
+            (result)=>{
                 res.status(200);
-                res.send("Ok");
+                res.send(result);
             }
-        });
+        ).catch(
+            (reject)=>{
+                res.status(500);
+                res.send(reject);
+            }
+        );
     }
 });
 
 router.delete('/:id',(req,res)=>{
     const { id } = req.params;
     if(id){
-        skill.deleteSkill(id, response=>{
-            if(!response){
-                res.status(500);
-                res.send("Database Error!");
-            }else{
+        skill.deleteSkill(id).then(
+            (result)=>{
                 res.status(200);
-                res.send("Ok");
+                res.send(result);
             }
-        });
+        ).catch(
+            (reject)=>{
+                res.status(500);
+                res.send(reject);
+            }
+        );
     }else{
         res.status(400);
         res.send("Invalid delete input!");
