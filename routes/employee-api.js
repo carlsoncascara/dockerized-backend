@@ -1,8 +1,26 @@
 const express = require('express');
 const router = express.Router();
+
+const queryHelper = require('../models/query-helper')
 const employee = require('../models/employee-db');
 
 router.use(express.json());
+
+router.get('/next_id', (req,res)=>{
+    queryHelper.getNextID('employee').then(
+        resolve=>{
+            console.log(resolve);
+            res.status(200);
+            res.json(resolve);
+        }
+    ).catch(
+        reject=>{
+            console.log(err)
+            res.status(500);
+            res.json(reject);
+        }
+    );
+});
 
 router.get('/', (req,res) =>
     employee.getAllEmployee().then(
@@ -12,7 +30,7 @@ router.get('/', (req,res) =>
         },
         (reject)=>{
             res.status(500);
-            res.send("Internal error occurred!")
+            res.json("Internal error occurred!")
         }
     )
 );
@@ -26,7 +44,7 @@ router.get('/:id', (req, res) =>
         },
         (reject)=>{
             res.status(500);
-            res.send("Internal error occurred!");
+            res.json("Internal error occurred!");
         }
     )
 );
@@ -35,16 +53,16 @@ router.post('/', (req, res) => {
     const response = employee.Employee(req.body);
     if(!response){
         res.status(400);
-        res.send("Invalid input request!");
+        res.json("Invalid input request!");
     }else{
         employee.createEmployee(response).then(
             (result)=>{
                 res.status(200);
-                res.send("New Employeee ID: " + result);
+                res.json("New Employeee ID: " + result);
             },
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         );
     }
@@ -57,16 +75,16 @@ router.put('/:id', (req,res)=>{
 
     if(!response){
         res.status(400);
-        res.send("Invalid value(s) to update!")
+        res.json("Invalid value(s) to update!")
     }else{
         employee.updateEmployee(id,response).then(
             (result) =>{
                 res.status(200);
-                res.send(result);
+                res.json(result);
             },
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         )
     }
@@ -78,16 +96,16 @@ router.delete("/:id",(req,res)=>{
         employee.removeEmployee(id).then(
             (result)=>{
                 res.status(200);
-                res.send(result);
+                res.json(result);
             },
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         );
     }else{
         res.status(400);
-        res.send("Invalid delete input!");
+        res.json("Invalid delete input!");
     }
 });
 

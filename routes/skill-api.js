@@ -1,23 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const skill = require('../models/skill-db');
+const queryHelper = require('../models/query-helper');
 
 router.use(express.json());
 
+router.get('/next_id', (req,res)=>{
+    queryHelper.getNextID('skill').then(
+        resolve=>{
+            console.log(resolve);
+            res.status(200);
+            res.json(resolve);
+        }
+    ).catch(
+        reject=>{
+            console.log(err)
+            res.status(500);
+            res.json(reject);
+        }
+    );
+});
+
 router.get('/',(req, res)=>
     skill.getAllSkill().then(
-        (result)=>{
-            res.status(200);
-            res.json(result);
-        }
+    (result)=>{
+        res.status(200);
+        res.json(result);
+    }
     ).catch(
         (reject)=>{
             res.status(500);
             res.send(reject);
         }
     )
-);
-
+);            
+            
 router.get('/:id',(req,res)=>
     skill.getSkill(req.params.id).then(
         (result)=>{
@@ -33,6 +50,7 @@ router.get('/:id',(req,res)=>
 );
 
 router.post('/',(req,res)=>{
+    
     const skillBody = skill.Skill(req.body);
     if(!skillBody){
         res.status(400);
@@ -62,9 +80,9 @@ router.put('/:id',(req,res)=>{
         skill.updateSkill(id, skillBody).then(
             (result)=>{
                 res.status(200);
-                res.send(result);
+                res.json(result);
             }
-        ).catch(
+            ).catch(
             (reject)=>{
                 res.status(500);
                 res.send(reject);
@@ -79,7 +97,7 @@ router.delete('/:id',(req,res)=>{
         skill.deleteSkill(id).then(
             (result)=>{
                 res.status(200);
-                res.send(result);
+                res.json(result);
             }
         ).catch(
             (reject)=>{

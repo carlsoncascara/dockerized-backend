@@ -3,7 +3,7 @@ const formatDate = require('../helpers/dateparser');
 
 function Employee(employee){
     const {firstName,lastName,birthdate,skills} = employee;
-
+    console.log(employee);
     if(firstName && lastName && birthdate){   
         return [
             firstName,
@@ -19,17 +19,19 @@ function Employee(employee){
 const getAllEmployee = () => new Promise((resolve,reject)=> 
     db.query("SELECT * FROM employee", (err, res)=>{
         if(err){
+            console.error("Error: " + err);
             reject(err);
         }else{
             const data = res.map((val)=>{
                 return {
-                    id: val.id,
+                    employeeID: val.id,
                     firstName: val.first_name,
                     lastName: val.last_name,
                     birthdate: formatDate.getDateYMDFormat(val.birthdate),
-                    skills: val.skills
+                    skills: val.skills != null ? String(val.skills).split(",") : []
                 }
             });
+            console.log("Note: ",data);
             resolve(data);
         }
     })
@@ -38,19 +40,21 @@ const getAllEmployee = () => new Promise((resolve,reject)=>
 const getEmployee = (id) => new Promise((resolve, reject) =>
     db.query("SELECT * FROM employee WHERE id=?",[id], (err,res,fields) => {
         if(err){
+            console.error("Error: ",err);
             reject(null);
         }else{
-            console.log(fields);
             if(res){
                 data = {
-                    id : res[0].id,
+                    employeeID : res[0].id,
                     firstName: res[0].first_name,
                     lastName: res[0].last_name,
                     birthdate: formatDate.getDateYMDFormat(res[0].birthdate),
-                    skills: res[0].skills
+                    skills: res[0].skills != null ? String(res[0].skills).split(",") : []
                 };
+                console.log("Note: ",res);
                 resolve(data);
             }else{
+                console.log("Note: Empty");
                 reject({});
             }
         }
@@ -62,8 +66,10 @@ const createEmployee = (employee) => new Promise((resolve,reject)=>
         employee[0],employee[1],employee[2],employee[3],
     ],(err,res)=>{
         if(err){
+            console.error("Error: ",err);
             reject("Internal error occurred!");
         }else{
+            console.log("Note: ",res);
             resolve(res.insertId);
         }
     })
@@ -74,10 +80,10 @@ const updateEmployee = (id, employee) => new Promise((resolve,reject)=>
         employee[0],employee[1],employee[2],employee[3],id
     ], (err,res)=>{
         if(err){
-            console.error(err);
+            console.error("Error: ",err);
             reject("Internal error occurred!")
         }else{
-            console.log(res);
+            console.log("Note: ",res);
             resolve("Ok");
         }
     })
@@ -86,10 +92,10 @@ const updateEmployee = (id, employee) => new Promise((resolve,reject)=>
 const removeEmployee = (id) => new Promise((resolve,reject)=>
     db.query("DELETE FROM employee WHERE id=?",[id],(err,res)=>{
         if(err){
-            console.error(err);
+            console.error("Error: ",err);
             reject("Internal error occurred!");
         }else{
-            console.log(res);
+            console.log("Note: ",res);
             resolve("Ok");
         }
     })
