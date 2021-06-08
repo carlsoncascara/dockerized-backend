@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // CORS settings
 const origin = "http://localhost:4200";
@@ -20,5 +20,5 @@ app.use('/skill',require('./routes/skill-api'));
 
 
 app.listen(port, ()=>{
-    console.log(`Server nodejs server at http://localhost:${port}`);
+    console.log(`Server nodejs serve at http://localhost:${port}`);
 });

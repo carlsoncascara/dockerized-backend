@@ -9,7 +9,6 @@ router.use(express.json());
 router.get('/next_id', (req,res)=>{
     queryHelper.getNextID('employee').then(
         resolve=>{
-            console.log(resolve);
             res.status(200);
             res.json(resolve);
         }
@@ -30,7 +29,7 @@ router.get('/', (req,res) =>
         },
         (reject)=>{
             res.status(500);
-            res.json("Internal error occurred!")
+            res.json(reject)
         }
     )
 );
@@ -44,7 +43,7 @@ router.get('/:id', (req, res) =>
         },
         (reject)=>{
             res.status(500);
-            res.json("Internal error occurred!");
+            res.json(reject);
         }
     )
 );
@@ -53,12 +52,12 @@ router.post('/', (req, res) => {
     const response = employee.Employee(req.body);
     if(!response){
         res.status(400);
-        res.json("Invalid input request!");
+        res.json("failed");
     }else{
-        employee.createEmployee(response).then(
+        employee.addEmployee(response).then(
             (result)=>{
                 res.status(200);
-                res.json("New Employeee ID: " + result);
+                res.json(result);
             },
             (reject)=>{
                 res.status(500);
@@ -75,7 +74,7 @@ router.put('/:id', (req,res)=>{
 
     if(!response){
         res.status(400);
-        res.json("Invalid value(s) to update!")
+        res.json("failed")
     }else{
         employee.updateEmployee(id,response).then(
             (result) =>{
@@ -105,7 +104,7 @@ router.delete("/:id",(req,res)=>{
         );
     }else{
         res.status(400);
-        res.json("Invalid delete input!");
+        res.json("failed");
     }
 });
 

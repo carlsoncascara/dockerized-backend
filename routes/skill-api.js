@@ -8,13 +8,11 @@ router.use(express.json());
 router.get('/next_id', (req,res)=>{
     queryHelper.getNextID('skill').then(
         resolve=>{
-            console.log(resolve);
             res.status(200);
             res.json(resolve);
         }
     ).catch(
         reject=>{
-            console.log(err)
             res.status(500);
             res.json(reject);
         }
@@ -30,7 +28,7 @@ router.get('/',(req, res)=>
     ).catch(
         (reject)=>{
             res.status(500);
-            res.send(reject);
+            res.json(reject);
         }
     )
 );            
@@ -44,7 +42,7 @@ router.get('/:id',(req,res)=>
     ).catch(
         (reject)=>{
             res.status(500);
-            res.send(reject);
+            res.json(reject);
         }
     )
 );
@@ -54,17 +52,17 @@ router.post('/',(req,res)=>{
     const skillBody = skill.Skill(req.body);
     if(!skillBody){
         res.status(400);
-        res.send("Invalid input request!");
+        res.json("failed");
     }else{
-        skill.createSkill(skillBody).then(
+        skill.addSkill(skillBody).then(
             (result)=>{
                 res.status(200);
-                res.send(result);
+                res.json(result);
             }
         ).catch(
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         );
     }
@@ -75,7 +73,7 @@ router.put('/:id',(req,res)=>{
     const skillBody = skill.Skill(req.body);
     if(!skillBody){
         res.status(400);
-        res.send("Invalid input request!");
+        res.json("failed");
     }else{
         skill.updateSkill(id, skillBody).then(
             (result)=>{
@@ -85,7 +83,7 @@ router.put('/:id',(req,res)=>{
             ).catch(
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         );
     }
@@ -94,20 +92,20 @@ router.put('/:id',(req,res)=>{
 router.delete('/:id',(req,res)=>{
     const { id } = req.params;
     if(id){
-        skill.deleteSkill(id).then(
+        skill.removeSkill(id).then(
             (result)=>{
                 res.status(200);
-                res.json(result);
+                res.json(result); 
             }
         ).catch(
             (reject)=>{
                 res.status(500);
-                res.send(reject);
+                res.json(reject);
             }
         );
     }else{
         res.status(400);
-        res.send("Invalid delete input!");
+        res.json("failed");
     }
 });
 

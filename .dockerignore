@@ -1,0 +1,6 @@
+node_modules
+tempdata
+Dockerfile
+.dockerignore
+workspace.code-workspace
+docker-compose.*

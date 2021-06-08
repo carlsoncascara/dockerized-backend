@@ -1,0 +1,25 @@
+version: "3"
+services:
+    docker-express:
+        build:
+            context: .
+            args:
+                NODE_ENV: development
+        networks:
+            - dbxnode
+            - nodexangular
+        volumes:
+            - ./:/node:ro
+            - /node/node_modules
+        environment:
+            - NODE_ENV=developement
+        ports:
+            - $EXPRESS_LOCAL_PORT:$EXPRESS_DOCKER_PORT
+        command: npm run dev
+networks:
+    dbxnode:
+        name: dbxnode
+        driver: bridge
+    nodexangular:
+        name: nodexangular
+        driver: bridge
